@@ -1,0 +1,72 @@
+name: Sprint (fast polling)
+
+# The scheduled watcher polls every 30 minutes, which is fine for "some time
+# this month" but too slow if you know the system opens today and rooms are
+# first come, first served. Start this manually and it polls every 30 seconds
+# for up to 6 hours, booking the instant the system opens.
+on:
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: "How long to keep polling (max 350)"
+        default: "300"
+      interval:
+        description: "Seconds between polls"
+        default: "30"
+      dry_run:
+        description: "Dry run (find rooms but book nothing)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: room-booking
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  sprint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355          # GitHub hard-stops a job at 6 hours
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Poll hard until it opens
+        env:
+          WRB_USERNAME: ${{ secrets.WRB_USERNAME }}
+          WRB_PASSWORD: ${{ secrets.WRB_PASSWORD }}
+          NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FLAG="--confirm"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then FLAG=""; fi
+          python run.py $FLAG --loop \
+            --interval "${{ inputs.interval }}" \
+            --max-minutes "${{ inputs.minutes }}"
+
+      - name: Remember what was booked
+        if: always()
+        run: |
+          git config user.name  "room-booking-bot"
+          git config user.email "actions@github.com"
+          git pull --rebase --autostash || true
+          git add state.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "nothing changed"
+          else
+            git commit -m "state: sprint booking update [skip ci]"
+            git push
+          fi

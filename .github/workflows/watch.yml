@@ -1,0 +1,72 @@
+name: Watch and book
+
+# Polls the booking system. While it is closed each run costs a few seconds.
+# The moment it opens, this emails you and books everything in config.json.
+on:
+  schedule:
+    # Every 30 minutes. On a private repo that is ~1440 billed minutes/month,
+    # inside the 2000-minute free allowance. Do not go below this on a private
+    # repo without checking your usage.
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (find rooms but book nothing)"
+        type: boolean
+        default: false
+
+# Two overlapping runs could book the same slot twice. Never let that happen.
+concurrency:
+  group: room-booking
+  cancel-in-progress: false
+
+permissions:
+  contents: write      # commit state.json back so bookings are remembered
+  issues: write        # notification fallback (GitHub emails you the issue)
+
+jobs:
+  book:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Poll, and book if open
+        env:
+          WRB_USERNAME: ${{ secrets.WRB_USERNAME }}
+          WRB_PASSWORD: ${{ secrets.WRB_PASSWORD }}
+          NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python run.py
+          else
+            python run.py --confirm
+          fi
+
+      - name: Remember what was booked
+        if: always()
+        run: |
+          git config user.name  "room-booking-bot"
+          git config user.email "actions@github.com"
+          # Touch a heartbeat weekly so GitHub does not disable the schedule
+          # after 60 days of repository inactivity.
+          date -u +%Y-%m-%dT%H:%M:%SZ > .heartbeat
+          git add state.json .heartbeat 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "nothing changed"
+          else
+            git commit -m "state: booking update [skip ci]"
+            git push
+          fi

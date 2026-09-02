@@ -1,0 +1,110 @@
+name: 2. Change what gets booked
+
+# The browser version of the setup wizard: fill this form in on the Actions
+# tab and it rewrites config.json for you. No Python, no editor, no git.
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Days, comma separated (Mon,Tue,Wed,Thu,Fri,Sat,Sun)"
+        default: "Wed,Thu"
+      start:
+        description: "Start time (HH:MM)"
+        default: "17:00"
+      end:
+        description: "End time (HH:MM)"
+        default: "22:00"
+      rooms:
+        description: "Rooms, best first, comma separated"
+        default: "OC1.06,OC1.09,OC1.04,OC1.01"
+      strict:
+        description: "Book ONLY these rooms (never a different one)"
+        type: boolean
+        default: true
+      terms:
+        description: "Terms (autumn,spring,summer)"
+        default: "autumn,spring,summer"
+      size:
+        description: "Group size"
+        default: "6"
+      reason:
+        description: "Reason for booking (max 35 characters)"
+        default: "Group study session"
+      instance:
+        description: "Booking system URL to watch"
+        default: "https://abs.warwick.ac.uk/WRB2627/"
+
+permissions:
+  contents: write
+
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Rewrite config.json
+        env:
+          IN_DAYS: ${{ inputs.days }}
+          IN_START: ${{ inputs.start }}
+          IN_END: ${{ inputs.end }}
+          IN_ROOMS: ${{ inputs.rooms }}
+          IN_STRICT: ${{ inputs.strict }}
+          IN_TERMS: ${{ inputs.terms }}
+          IN_SIZE: ${{ inputs.size }}
+          IN_REASON: ${{ inputs.reason }}
+          IN_INSTANCE: ${{ inputs.instance }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from wrb.rules import expand, parse_weekdays, summarise
+
+          split = lambda s: [x.strip() for x in s.split(",") if x.strip()]
+          days = split(os.environ["IN_DAYS"])
+          parse_weekdays(days)                      # fail loudly on a typo
+
+          cfg = json.load(open("config.json")) if os.path.exists("config.json") else {}
+          cfg["instance"] = {"url": os.environ["IN_INSTANCE"].strip()}
+          cfg.setdefault("notify", {})
+          cfg.setdefault("academic_year", "2026/27")
+          cfg.setdefault("delay_seconds", 2)
+          cfg.setdefault("max_new_bookings_per_run", 20)
+          cfg["defaults"] = {"strict_rooms": os.environ["IN_STRICT"] == "true"}
+          cfg["rules"] = [{
+              "name": "Booking pattern",
+              "weekdays": days,
+              "start": os.environ["IN_START"].strip(),
+              "end": os.environ["IN_END"].strip(),
+              "terms": split(os.environ["IN_TERMS"]),
+              "rooms": split(os.environ["IN_ROOMS"]),
+              "strict_rooms": os.environ["IN_STRICT"] == "true",
+              "size": int(os.environ["IN_SIZE"]),
+              "reason": os.environ["IN_REASON"].strip()[:35],
+          }]
+
+          slots = expand(cfg)                       # validates before saving
+          json.dump(cfg, open("config.json", "w"), indent=2)
+          print("This config produces %d slots:" % len(slots))
+          print(summarise(slots))
+          for s in slots[:10]:
+              print("  ", s)
+          PY
+
+      - name: Save it
+        run: |
+          git config user.name  "room-booking-bot"
+          git config user.email "actions@github.com"
+          git add config.json
+          if git diff --cached --quiet; then
+            echo "config unchanged"
+          else
+            git commit -m "config: updated from the Actions form [skip ci]"
+            git push
+          fi

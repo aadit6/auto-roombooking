@@ -1,0 +1,77 @@
+name: 1. Test my setup
+
+# Run this FIRST, straight after adding your secrets. It proves three things
+# without booking anything:
+#   * GitHub's servers can reach the Warwick booking site
+#   * your username and password work
+#   * your config.json expands into the slots you expect
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Can we reach Warwick from here?
+        run: python run.py --check
+
+      - name: Do the credentials work?
+        env:
+          WRB_USERNAME: ${{ secrets.WRB_USERNAME }}
+          WRB_PASSWORD: ${{ secrets.WRB_PASSWORD }}
+        run: |
+          python - <<'PY'
+          import os, sys
+          from wrb.client import WRBClient, WRBError
+          from wrb.live import check
+
+          # Log in against whichever instance is actually open right now; the
+          # one we are waiting for is still showing a holding page.
+          for code in ("2526", "2627", "2728"):
+              url = "https://abs.warwick.ac.uk/WRB%s/" % code
+              st = check(url)
+              print(" ", st)
+              if st.live:
+                  try:
+                      WRBClient(base=url, verbose=True).login()
+                      print("LOGIN OK against", url)
+                      sys.exit(0)
+                  except WRBError as e:
+                      print("LOGIN FAILED:", e)
+                      sys.exit(1)
+          print("No instance is open yet, so the login could not be tested.")
+          print("Reachability and config are fine - that is the important part.")
+          PY
+
+      - name: Check notifications work
+        env:
+          NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - <<'PY'
+          from wrb.notify import Notifier
+          n = Notifier({})
+          ok = n.send("Room booking: setup test",
+                      "If you are reading this, notifications work.\n"
+                      "The watcher will message you again when the booking "
+                      "system opens.")
+          print("notification sent:", ok)
+          PY
