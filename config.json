@@ -1,28 +1,42 @@
 {
-  "instance": { "url": "https://abs.warwick.ac.uk/WRB2627/" },
-  "notify": { "email": "nagpalaadit@gmail.com" },
+  "instance": {
+    "url": "https://abs.warwick.ac.uk/WRB2627/"
+  },
+  "notify": {
+    "email": "nagpalaadit@gmail.com"
+  },
   "academic_year": "2026/27",
-
   "delay_seconds": 2,
   "max_new_bookings_per_run": 20,
-
   "defaults": {
     "strict_rooms": true,
-    "size": 6,
+    "size": 5,
     "reason": "Group study session"
   },
-
   "rules": [
     {
       "name": "Wed+Thu evenings",
-      "weekdays": ["Wed", "Thu"],
+      "weekdays": [
+        "Wed",
+        "Thu"
+      ],
       "start": "17:00",
       "end": "22:00",
-      "terms": ["autumn", "spring", "summer"],
-      "rooms": ["OC1.06", "OC1.09", "OC1.04", "OC1.01"],
+      "terms": [
+        "autumn",
+        "spring",
+        "summer"
+      ],
+      "rooms": [
+        "OC1.06",
+        "OC1.09",
+        "OC1.04",
+        "OC1.01"
+      ],
       "strict_rooms": true,
-      "size": 6,
-      "reason": "Group study session"
+      "size": 5,
+      "reason": "Group study session",
+      "_size_note": "Sizes snap UP to the nearest offered value (1-5, then 10, 15...). 6 would become 10 and hide any Oculus room seating <10. 5 casts the widest safe net; strict_rooms stops it booking anything unwanted."
     }
   ]
 }
