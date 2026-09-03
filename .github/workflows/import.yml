@@ -1,0 +1,52 @@
+name: 3. Import from spreadsheet
+
+# The bulk version of "2. Change what gets booked". Export your spreadsheet
+# as CSV, then on this repo's GitHub page: Add file -> Upload files -> drop
+# it in as bookings.csv -> Commit changes. No git, no editor, no code. This
+# workflow then turns every row into a booking pattern automatically.
+#
+# See bookings.example.csv for the columns it expects.
+on:
+  push:
+    paths:
+      - "bookings.csv"
+  workflow_dispatch:
+    inputs:
+      append:
+        description: "Add to existing patterns instead of replacing them"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Import bookings.csv
+        run: |
+          FLAG=""
+          if [ "${{ inputs.append }}" = "true" ]; then FLAG="--append"; fi
+          python import_csv.py $FLAG
+
+      - name: Save it
+        run: |
+          git config user.name  "room-booking-bot"
+          git config user.email "actions@github.com"
+          git add config.json
+          if git diff --cached --quiet; then
+            echo "config unchanged"
+          else
+            git commit -m "config: bulk-imported from bookings.csv [skip ci]"
+            git push
+          fi

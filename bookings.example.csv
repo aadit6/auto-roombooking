@@ -1,0 +1,4 @@
+label,rooms,days,start,end,terms,date_from,date_to,size,reason,strict
+Oculus evenings,OC1.06;OC1.09;OC1.04;OC1.01,Wed;Thu,17:00,22:00,autumn;spring;summer,,,5,Group study session,yes
+Library Friday morning,L1.02;L1.03,Fri,09:00,11:00,autumn;spring,,,6,Project meeting,yes
+One-off exam prep,MS.03,Mon,18:00,20:00,,2026-11-02,2026-12-07,4,Exam prep,no

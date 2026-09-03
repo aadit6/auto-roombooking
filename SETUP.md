@@ -95,6 +95,22 @@ python run.py --check      # shows exactly which dates it will book
 > nothing and tries again on the next run. Unticked, it falls back to the
 > smallest room that fits.
 
+**Got a whole spreadsheet of rooms/days/times instead of just one pattern?**
+Skip the form above — this is the smoothest option if you're setting this up
+for someone else who doesn't want to touch code at all:
+
+1. In your spreadsheet app, add columns `label, rooms, days, start, end,
+   terms, date_from, date_to, size, reason, strict` (see
+   [`bookings.example.csv`](bookings.example.csv) for a filled-in example —
+   most columns are optional).
+2. **File → Download / Save As → CSV.**
+3. On the repo's GitHub page: **Add file → Upload files**, drag the CSV in,
+   rename it to `bookings.csv` if it isn't already, then **Commit changes**.
+4. That's it — the upload itself triggers **“3. Import from spreadsheet”**,
+   which turns every row into a booking pattern and saves it. Check the
+   **Actions** tab; a red ✗ means a row had a problem (it'll say exactly
+   which row and why — nothing is saved until every row is valid).
+
 ---
 
 ## Step 5 — Turn the watcher on

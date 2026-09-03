@@ -190,14 +190,34 @@ python book.py --date 2026-09-15 --start 14:00 --rooms "A1.25,MS.03" --confirm
 Sizes are snapped to the values the dropdown actually offers (1–5, 10, 15, 20,
 30, …), so `"size": 6` searches for a room seating 10.
 
+### Bulk import from a spreadsheet
+
+If what to book comes as a spreadsheet (many rooms/days/times at once) rather
+than one pattern, save it as CSV and let `import_csv.py` build the `rules`
+list for you instead of typing it in by hand:
+
+```bash
+python import_csv.py --file bookings.csv     # replaces the rules list
+python import_csv.py --file bookings.csv --append   # adds to it instead
+```
+
+See `bookings.example.csv` for the columns it expects (`rooms`, `days`,
+`start`, `end`, `terms` or `date_from`/`date_to`, plus optional `label`,
+`size`, `reason`, `strict`). It validates every row before writing anything —
+one bad row and `config.json` is left untouched, with every problem listed at
+once. In the cloud, this runs automatically via **"3. Import from
+spreadsheet"** the moment `bookings.csv` is uploaded through GitHub's web UI
+(Add file → Upload files) — no git or editing required.
+
 ### Running it in the cloud
 
-Four GitHub Actions workflows, described fully in **[SETUP.md](SETUP.md)**:
+Five GitHub Actions workflows, described fully in **[SETUP.md](SETUP.md)**:
 
 | Workflow | What it does |
 |---|---|
 | **1. Test my setup** | proves reachability, login and notifications |
-| **2. Change what gets booked** | a web form that rewrites `config.json` |
+| **2. Change what gets booked** | a web form that rewrites `config.json` (one pattern) |
+| **3. Import from spreadsheet** | uploading `bookings.csv` rewrites `config.json` (many patterns) |
 | **Watch and book** | every 30 min: poll, and book when it opens |
 | **Sprint (fast polling)** | manual: poll every 30 s for 5 h on opening day |
 
@@ -215,10 +235,11 @@ To run locally on Windows instead: `.\schedule.ps1 -Register -Confirm`.
 run.py                main entry: watch -> notify -> book everything in config
 book.py               one-off single booking from the command line
 setup_wizard.py       interactive config builder
+import_csv.py         bulk config builder from a spreadsheet (bookings.csv)
 config.json           what to book
 state.json            what has already been booked (the anti-double-book guard)
 schedule.ps1          local Windows Task Scheduler registration
-.github/workflows/    the four cloud workflows
+.github/workflows/    the five cloud workflows
 wrb/client.py         session, login, VIEWSTATE round-tripping, postbacks
 wrb/booker.py         the five wizard steps
 wrb/rules.py          recurring rules -> dated slots
