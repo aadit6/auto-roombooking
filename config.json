@@ -9,13 +9,11 @@
   "delay_seconds": 2,
   "max_new_bookings_per_run": 20,
   "defaults": {
-    "strict_rooms": true,
-    "size": 5,
-    "reason": "Group study session"
+    "strict_rooms": true
   },
   "rules": [
     {
-      "name": "Wed+Thu evenings",
+      "name": "Booking pattern",
       "weekdays": [
         "Wed",
         "Thu"
@@ -34,9 +32,8 @@
         "OC1.01"
       ],
       "strict_rooms": true,
-      "size": 5,
-      "reason": "Group study session",
-      "_size_note": "Sizes snap UP to the nearest offered value (1-5, then 10, 15...). 6 would become 10 and hide any Oculus room seating <10. 5 casts the widest safe net; strict_rooms stops it booking anything unwanted."
+      "size": 20,
+      "reason": "KCSOC"
     }
   ]
 }
