@@ -4,10 +4,13 @@ name: Watch and book
 # The moment it opens, this emails you and books everything in config.json.
 on:
   schedule:
-    # Every 30 minutes. On a private repo that is ~1440 billed minutes/month,
-    # inside the 2000-minute free allowance. Do not go below this on a private
-    # repo without checking your usage.
-    - cron: "*/30 * * * *"
+    # Every 30 minutes, offset to :07/:37. On a private repo that is ~1440
+    # billed minutes/month, inside the 2000-minute free allowance. Do not go
+    # below this on a private repo without checking your usage.
+    # GitHub's schedule trigger is best-effort and queues get backed up most
+    # at the top/bottom of the hour (everyone else's cron fires there too),
+    # so offsetting a few minutes off :00/:30 tends to reduce delay.
+    - cron: "7,37 * * * *"
   workflow_dispatch:
     inputs:
       dry_run:
