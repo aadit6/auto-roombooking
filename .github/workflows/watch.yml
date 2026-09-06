@@ -4,13 +4,11 @@ name: Watch and book
 # The moment it opens, this emails you and books everything in config.json.
 on:
   schedule:
-    # Every 10 minutes, offset off the hour/half-hour marks. This repo is
-    # public, so Actions minutes are free/unmetered on standard runners -
-    # no billing concern at this cadence.
-    # GitHub's schedule trigger is still best-effort and queues get backed
-    # up most at round numbers (everyone else's cron fires there too), so
-    # offsetting a few minutes off :00/:10/:20/... tends to reduce delay.
-    - cron: "2,12,22,32,42,52 * * * *"
+    # Every 10 minutes. This repo is public, so Actions minutes are
+    # free/unmetered on standard runners - no billing concern at this
+    # cadence. (GitHub's schedule trigger is still best-effort and can be
+    # delayed under load; this cron is what's asked for regardless.)
+    - cron: "*/10 * * * *"
   workflow_dispatch:
     inputs:
       dry_run:
