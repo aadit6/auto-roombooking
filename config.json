@@ -2,9 +2,7 @@
   "instance": {
     "url": "https://abs.warwick.ac.uk/WRB2627/"
   },
-  "notify": {
-    "email": "nagpalaadit@gmail.com"
-  },
+  "notify": {},
   "academic_year": "2026/27",
   "delay_seconds": 2,
   "max_new_bookings_per_run": 20,
