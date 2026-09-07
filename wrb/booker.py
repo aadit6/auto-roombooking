@@ -203,6 +203,7 @@ class Booker:
             ctl("FoodDrink"): "Yes",       # "food and drink will not be taken in"
             ctl("Layout"): "Yes",          # "furniture cannot be moved"
             ctl("acceptConditions"): "Yes",
+            ctl("SocietyClub"): "Yes",     # this account only ever books on behalf of a society
         }
         if req.telephone:
             extra[ctl("tel")] = req.telephone

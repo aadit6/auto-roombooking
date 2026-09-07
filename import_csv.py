@@ -8,6 +8,7 @@ through the web form or the interactive wizard one event at a time.
     python import_csv.py                  # reads bookings.csv, replaces rules
     python import_csv.py --file mine.csv
     python import_csv.py --append         # add to existing rules instead
+    python import_csv.py --default-reason "KCSOC social"   # see below
 
 CSV columns (header row required):
 
@@ -17,6 +18,12 @@ CSV columns (header row required):
     date                           - YYYY-MM-DD, the single day to book
     label, size, reason, strict    - optional, fall back to config.json's
                                       "defaults" if left blank
+
+A row that leaves "reason" blank falls back to config.json's
+defaults.reason. --default-reason sets that fallback (and saves it to
+config.json), so it only needs to be given once - every future import
+(including a plain drag-and-drop CSV upload, which cannot pass CLI
+flags) keeps using it until it is set again.
 
 See bookings.example.csv for filled-in examples.
 """
@@ -116,6 +123,10 @@ def main():
                      help="CSV to import (default: bookings.csv)")
     ap.add_argument("--append", action="store_true",
                      help="add to existing rules instead of replacing them")
+    ap.add_argument("--default-reason", default=os.environ.get("DEFAULT_REASON", ""),
+                     help="fallback reason for rows that leave 'reason' blank; "
+                          "saved to config.json's defaults so it also applies "
+                          "next time, without needing to be given again")
     args = ap.parse_args()
 
     if not os.path.exists(args.file):
@@ -132,6 +143,9 @@ def main():
 
     with open(CONFIG, encoding="utf-8") as fh:
         cfg = json.load(fh)
+
+    if args.default_reason.strip():
+        cfg.setdefault("defaults", {})["reason"] = args.default_reason.strip()[:35]
     defaults = cfg.get("defaults", {})
 
     with open(args.file, newline="", encoding="utf-8-sig") as fh:
