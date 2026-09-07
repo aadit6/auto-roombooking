@@ -54,20 +54,6 @@ repository secret**. Add these three, one at a time:
 
 Secrets are encrypted and are not visible in logs.
 
-#### Optional: real emails instead of GitHub notifications
-
-By default you get notified through a GitHub issue, and GitHub emails that to
-you — zero setup. If you would rather have a plain email, add four more
-secrets. For Gmail you must generate an **app password** first
-(Google Account → Security → 2-Step Verification → App passwords):
-
-| Name | Value |
-|---|---|
-| `SMTP_HOST` | `smtp.gmail.com` |
-| `SMTP_PORT` | `587` |
-| `SMTP_USER` | your Gmail address |
-| `SMTP_PASSWORD` | the 16-character app password (**not** your Gmail password) |
-
 ### Step 3 — Check it works
 
 Go to the **Actions** tab. If you see a banner offering to enable workflows,
@@ -91,15 +77,9 @@ to touch code or JSON at all.
 | `date` | **yes** | `YYYY-MM-DD` — the single day to book | `2026-11-04` |
 | `start` | **yes** | `HH:MM`, 24-hour | `17:00` |
 | `end` | **yes** | `HH:MM`, 24-hour | `22:00` |
-| `label` | optional | a name for the row, shown in logs/emails | `Weekly social` |
 | `size` | optional | how many people; snapped up to the nearest room capacity | `10` |
-| `reason` | optional | shown to Warwick, **max 35 characters**. Leave blank to use the default reason (see below) | `KCSOC weekly social` |
+| `reason` | optional | shown to Warwick, **max 35 characters**. Leave blank to use the default reason (see below) | `KCSOC Gita Circle` |
 | `strict` | optional | `yes`/`no` — `yes` means *never* book a different room than listed | `yes` |
-
-**One row is one event** — not a recurring pattern. A weekly booking across a
-term needs one row per week, not one row covering the whole term. The
-weekday is worked out automatically from `date`, so there's no separate
-`days` column to fill in.
 
 A filled-in example lives at
 [`bookings.example.csv`](bookings.example.csv):
@@ -110,16 +90,7 @@ Oculus evening,OC1.06;OC1.09;OC1.04;OC1.01,2026-11-04,17:00,22:00,5,Group study 
 Library Friday morning,L1.02;L1.03,2026-11-06,09:00,11:00,6,Project meeting,yes
 ```
 
-**2. Set a default reason (optional, one-time).** Any row that leaves
-`reason` blank falls back to a default. Out of the box that default is
-`"Group study session"`. To set your own once, so every row doesn't have to
-repeat it: Actions → **"3. Import from spreadsheet"** → Run workflow → fill
-in **`default_reason`** (e.g. `KCSOC weekly social`) alongside your CSV
-upload. That value is saved to `config.json`, so it keeps applying to future
-imports automatically — including plain drag-and-drop uploads, which can't
-carry input fields — until you set it again.
-
-**3. Download and upload it.**
+**2. Download and upload it.**
 
 1. In your spreadsheet app: **File → Download / Save As → CSV.**
 2. On the repo's GitHub page: **Add file → Upload files**, drag the CSV in,
@@ -194,8 +165,7 @@ To watch it work: Actions → **Watch and book** → most recent run.
 
 ### Step 6 — On opening day, sprint
 
-Rooms are first come, first served, so even a 10-minute gap can lose you
-OC1.06. If you know the system opens today:
+Rooms are first come, first served. If you know the system opens today:
 
 Actions → **Sprint (fast polling)** → Run workflow → leave the defaults.
 
@@ -235,7 +205,7 @@ Warwick. The machine must be switched on for it to work.
 python -m venv .venv
 .venv/Scripts/pip install -r requirements.txt
 python setup_wizard.py
-# or: python import_csv.py --file bookings.csv --default-reason "KCSOC social"
+# or: python import_csv.py --file bookings.csv --default-reason "KCSOC Gita Circle"
 
 python run.py --check      # what would happen
 python run.py --confirm    # do it once
@@ -248,29 +218,6 @@ To have Windows run it automatically every 15 minutes:
 .\schedule.ps1 -Status
 .\schedule.ps1 -Unregister
 ```
-
-### Things worth knowing
-
-- **Every booking is submitted as a society/club booking** (the
-  `SocietyClub` field, always `Yes`) — this fork is intended for society
-  use, not personal bookings. It's hardcoded in `wrb/booker.py`, not a
-  per-config toggle.
-- Every booking is **provisional** (`P`). Central Timetabling can cancel it.
-- The tool **never books the same slot twice** — `state.json` records what
-  it has done, and that file is saved back to your repository after every
-  run.
-- It books **one room per slot**, never several.
-- Bookings do not carry over to the next academic year; they are deleted at
-  the rollover, which is why a new instance appears each year.
-- Asking for a whole year of 5-hour slots is ~300 room-hours. That is a lot,
-  and Central Timetabling may cancel bookings they consider excessive. The
-  config books at most 20 new slots per run to spread the load; consider
-  doing one term (or a batch of rows) at a time.
-- Automating a university system is a grey area in the IT regulations. Keep
-  the poll interval gentle — do not lower it much below 10 minutes.
-
----
-
 ## Reference
 
 ### config.json
@@ -357,100 +304,3 @@ recon/                investigation scripts and captured HTML
 ```
 
 ---
-
-## Technical protocol reference
-
-Not needed to use this tool — kept for anyone maintaining or extending it.
-
-### What the site actually is
-
-Not a Warwick-SSO app. It is **Scientia Enterprise Foundation / Syllabus Plus
-Web Room Booking v2.2.3.12** — a classic ASP.NET WebForms application. That
-matters a lot: there is no JavaScript SPA and no API, but every interaction is
-a plain form POST that round-trips `__VIEWSTATE`, `__VIEWSTATEGENERATOR` and
-`__EVENTVALIDATION`. So a bare `requests.Session` can drive it. **No browser,
-no Selenium/Playwright, no AI agent needed** — which is why this is fast
-(a booking takes ~4 seconds) and reliable enough to schedule.
-
-#### Authentication flow
-
-```
-GET  https://abs.warwick.ac.uk/WRB2526/
- 302 /wrb2526/PortalLogin.aspx?ReturnUrl=%2fWRB2526%2f
- 302 https://timetablingmanagement.warwick.ac.uk/scientia/portal/Forward.aspx?SdbName=2526&ApplicationName=WRB
- 302 /Scientia/Portal/Login.aspx?ReturnUrl=...&SdbName=2526&ApplicationName=WRB
- 200 login form
-POST .../Login.aspx   ctl00$ContentPlaceHolder1$user / $password / $logon
- 302 Forward.aspx -> portallogin.aspx?Token=<guid>&Sdb=2526&Application=WRB
- 302 /wrb2526/default.aspx      (logged in)
-```
-
-Cookies issued: `ASP.NET_SessionId`, `ScientiaPortal` (on
-`timetablingmanagement`), `wrb2526`, `KeepPortalHidden` (on `abs`).
-
-**Gotcha:** ASP.NET only runs a button's server handler if that button's
-`name=value` is in the POST body. Submitting the form without
-`...$logon=Login` silently re-renders the login page.
-
-#### The booking wizard
-
-One page (`default.aspx`, posting to `Book.aspx`) with five server-side steps:
-
-| Step | What | Control that advances it |
-|---|---|---|
-| 1 | Room filters (size / zone / facilities) | — |
-| 2 | Date (ASP.NET Calendar) | `__doPostBack` on the calendar |
-| 3 | Time (start / end / duration) | — |
-| 4 | Grid of available rooms | `ctl00$Main$ShowOptionsBtn` (`Next >`) |
-| 5 | Booking details form | `ctl00$Main$SelectOptionButton` (`Next >`) |
-| 6 | Confirmation + reference | `ctl00$Main$MakeBookingBtn` (**postback, not a submit**) |
-
-### Parameters
-
-#### Step 1–3 — search
-
-| Control name | Meaning | Values |
-|---|---|---|
-| `ctl00$Main$Room1$ReqSize` | group size | `1,2,3,4,5,10,15,20,25,30,40,50,60,70,80,90,100,150,200,250,300,325,370,400,450,500` |
-| `ctl00$Main$Room1$ZoneList` | campus zone | `*` = any; GUIDs for *Gibbet Hill Site*, *Main Site*, *Westwood Site* |
-| `ctl00$Main$Room1$SuitabilityList` | facilities (multi-select) | GUIDs for Blackboard, DataVideo Projector/LCD/Plasma, Film Projector (35mm), Flat Room, Lecture Capture, Rehearsal Room, Rehearsal Room (Music), TEAMS Audio only / Enhanced / Tutor Camera, Tiered Room, Visualizer, Whiteboard |
-| `ctl00$Main$Date1$CollegeCalendar1$theCalendar` | date | postback **argument = days since 2000-01-01** (e.g. `9754` = 2026-09-15) |
-| `ctl00$Main$Time1$StartTimeList` | start | `1`=09:00 … `13`=21:00 |
-| `ctl00$Main$Time1$EndTimeList` | end | `1`=10:00 … `13`=22:00 |
-
-#### Step 4 — the options grid
-
-| Control name | Meaning |
-|---|---|
-| `ctl00$Main$OptionSelector$SelectedItem` | comma-separated option id(s) |
-| `ctl00$Main$OptionSelector$ItemsCount` | how many are selected |
-| `ctl00$Main$OptionSelector$AllowedItems` | server-set max — **3 rooms per booking** |
-
-Grid also offers `PrevDayBtn` / `NextDayBtn` / `PrevPeriod` / `NextPeriod` /
-`ExtendSearchLink` postbacks to widen the search.
-
-#### Step 5 — the booking form
-
-Prefilled from your account: `email`, `firstName`, `lastName`, `department`
-(*School of Engineering*), `departmentCode` (*ES*), `userType` (*UG*).
-
-Must be supplied — the booking fails validation without them:
-
-| Field | Value |
-|---|---|
-| `...$BookingForm1$meaningfulName` | reason, **max 35 chars** |
-| `...$BookingForm1$FoodDrink` | `Yes` ("food and drink will not be taken into the room") |
-| `...$BookingForm1$Layout` | `Yes` ("furniture cannot be moved") |
-| `...$BookingForm1$acceptConditions` | `Yes` |
-
-Set unconditionally by this codebase (see
-[Things worth knowing](#things-worth-knowing)): `SocietyClub` = `Yes`.
-
-Optional, otherwise defaulting to `No`: `tel`, `Disturbance`,
-`AttendanceFee`, `External-Speaker`.
-
-Confirm with a postback to `ctl00$Main$MakeBookingBtn` — it is
-`<input type="button">`, so sending it as a submit value does nothing.
-
-All bookings come back marked **`P` = "Provisional only — booking may be
-cancelled"**. That is normal for student ad-hoc bookings, not an error.
