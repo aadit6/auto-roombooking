@@ -95,19 +95,20 @@ python run.py --check      # shows exactly which dates it will book
 > nothing and tries again on the next run. Unticked, it falls back to the
 > smallest room that fits.
 
-**Got a whole spreadsheet of rooms/days/times instead of just one pattern?**
-Skip the form above — this is the smoothest option if you're setting this up
-for someone else who doesn't want to touch code at all:
+**Got a whole spreadsheet of individual bookings instead of just one
+pattern?** Skip the form above — this is the smoothest option if you're
+setting this up for someone else who doesn't want to touch code at all:
 
-1. In your spreadsheet app, add columns `label, rooms, days, start, end,
-   terms, date_from, date_to, size, reason, strict` (see
-   [`bookings.example.csv`](bookings.example.csv) for a filled-in example —
-   most columns are optional).
+1. In your spreadsheet app, add columns `label, rooms, date, start, end,
+   size, reason, strict` — one row per event (see
+   [`bookings.example.csv`](bookings.example.csv) for filled-in examples —
+   `label`, `size`, `reason`, `strict` are optional). `date` is the single
+   day to book (`YYYY-MM-DD`); the weekday is worked out automatically.
 2. **File → Download / Save As → CSV.**
 3. On the repo's GitHub page: **Add file → Upload files**, drag the CSV in,
    rename it to `bookings.csv` if it isn't already, then **Commit changes**.
 4. That's it — the upload itself triggers **“3. Import from spreadsheet”**,
-   which turns every row into a booking pattern and saves it. Check the
+   which turns every row into a booking and saves it. Check the
    **Actions** tab; a red ✗ means a row had a problem (it'll say exactly
    which row and why — nothing is saved until every row is valid).
 
@@ -115,7 +116,7 @@ for someone else who doesn't want to touch code at all:
 
 ## Step 5 — Turn the watcher on
 
-Nothing more to do: **“Watch and book”** runs automatically every 30 minutes
+Nothing more to do: **“Watch and book”** runs automatically every 10 minutes
 from the moment the code is in your repository. While the system is closed each
 run takes a few seconds and does nothing.
 
@@ -128,7 +129,7 @@ To watch it work: Actions → **Watch and book** → most recent run.
 
 ## Step 6 — On opening day, sprint
 
-Rooms are first come, first served, so a 30-minute gap can lose you OC1.06. If
+Rooms are first come, first served, so even a 10-minute gap can lose you OC1.06. If
 you know the system opens today:
 
 Actions → **Sprint (fast polling)** → Run workflow → leave the defaults.
@@ -150,7 +151,7 @@ Unlikely but possible if Warwick blocks cloud IP ranges. Fall back to running
 it on your own machine (see below).
 
 **It booked nothing and said “none of OC1.06/... free”**
-Working as intended — someone else had those rooms. It retries every 30
+Working as intended — someone else had those rooms. It retries every 10
 minutes; leave it running.
 
 **Scheduled runs stopped after a couple of months**
@@ -200,5 +201,5 @@ To have Windows run it automatically every 15 minutes:
   and Central Timetabling may cancel bookings they consider excessive. The
   config books at most 20 new slots per run to spread the load; consider doing
   one term at a time.
-- Automating a university system is a grey area in the IT regulations. The
-  30-minute default poll is deliberately gentle. Do not lower it much.
+- Automating a university system is a grey area in the IT regulations. Keep
+  the poll interval gentle — do not lower it much below 10 minutes.

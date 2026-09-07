@@ -3,7 +3,7 @@ name: 3. Import from spreadsheet
 # The bulk version of "2. Change what gets booked". Export your spreadsheet
 # as CSV, then on this repo's GitHub page: Add file -> Upload files -> drop
 # it in as bookings.csv -> Commit changes. No git, no editor, no code. This
-# workflow then turns every row into a booking pattern automatically.
+# workflow then turns every row into a one-off booking automatically.
 #
 # See bookings.example.csv for the columns it expects.
 on:

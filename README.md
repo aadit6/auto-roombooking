@@ -192,22 +192,23 @@ Sizes are snapped to the values the dropdown actually offers (1–5, 10, 15, 20,
 
 ### Bulk import from a spreadsheet
 
-If what to book comes as a spreadsheet (many rooms/days/times at once) rather
-than one pattern, save it as CSV and let `import_csv.py` build the `rules`
-list for you instead of typing it in by hand:
+If what to book comes as a spreadsheet of individual events (many one-off
+bookings at once) rather than one recurring pattern, save it as CSV and let
+`import_csv.py` build the `rules` list for you instead of typing it in by
+hand:
 
 ```bash
 python import_csv.py --file bookings.csv     # replaces the rules list
 python import_csv.py --file bookings.csv --append   # adds to it instead
 ```
 
-See `bookings.example.csv` for the columns it expects (`rooms`, `days`,
-`start`, `end`, `terms` or `date_from`/`date_to`, plus optional `label`,
-`size`, `reason`, `strict`). It validates every row before writing anything —
-one bad row and `config.json` is left untouched, with every problem listed at
-once. In the cloud, this runs automatically via **"3. Import from
-spreadsheet"** the moment `bookings.csv` is uploaded through GitHub's web UI
-(Add file → Upload files) — no git or editing required.
+See `bookings.example.csv` for the columns it expects (`rooms`, `date`,
+`start`, `end`, plus optional `label`, `size`, `reason`, `strict`) — one row
+per event. It validates every row before writing anything — one bad row and
+`config.json` is left untouched, with every problem listed at once. In the
+cloud, this runs automatically via **"3. Import from spreadsheet"** the
+moment `bookings.csv` is uploaded through GitHub's web UI (Add file → Upload
+files) — no git or editing required.
 
 ### Running it in the cloud
 
@@ -217,13 +218,14 @@ Five GitHub Actions workflows, described fully in **[SETUP.md](SETUP.md)**:
 |---|---|
 | **1. Test my setup** | proves reachability, login and notifications |
 | **2. Change what gets booked** | a web form that rewrites `config.json` (one pattern) |
-| **3. Import from spreadsheet** | uploading `bookings.csv` rewrites `config.json` (many patterns) |
-| **Watch and book** | every 30 min: poll, and book when it opens |
+| **3. Import from spreadsheet** | uploading `bookings.csv` rewrites `config.json` (many one-off events) |
+| **Watch and book** | every 10 min: poll, and book when it opens |
 | **Sprint (fast polling)** | manual: poll every 30 s for 5 h on opening day |
 
-30 minutes is chosen so a private repo stays inside the 2000 free
-Actions-minutes/month. The sprint workflow is how you get sub-minute reaction
-on the day without burning that budget.
+10 minutes is fine on a public repo — Actions minutes are unmetered there.
+On a private repo, budget minutes against the 2000 free/month allowance
+before lowering the interval. The sprint workflow is how you get sub-minute
+reaction on the day regardless.
 
 To run locally on Windows instead: `.\schedule.ps1 -Register -Confirm`.
 

@@ -1,6 +1,6 @@
 name: Sprint (fast polling)
 
-# The scheduled watcher polls every 30 minutes, which is fine for "some time
+# The scheduled watcher polls every 10 minutes, which is fine for "some time
 # this month" but too slow if you know the system opens today and rooms are
 # first come, first served. Start this manually and it polls every 30 seconds
 # for up to 6 hours, booking the instant the system opens.

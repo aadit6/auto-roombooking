@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-"""Bulk-import booking patterns from a spreadsheet.
+"""Bulk-import one-off bookings from a spreadsheet.
 
-Turns a CSV (one row per room/day/time pattern) into config.json's "rules"
-list. Meant for someone handing you a spreadsheet of what to book instead of
-clicking through the web form or the interactive wizard one pattern at a
-time.
+Turns a CSV (one row per event) into config.json's "rules" list. Meant for
+someone handing you a spreadsheet of what to book instead of clicking
+through the web form or the interactive wizard one event at a time.
 
     python import_csv.py                  # reads bookings.csv, replaces rules
     python import_csv.py --file mine.csv
@@ -12,14 +11,14 @@ time.
 
 CSV columns (header row required):
 
-    label, rooms, days, start, end, terms, date_from, date_to, size, reason, strict
+    label, rooms, date, start, end, size, reason, strict
 
-    rooms / days / terms  - multiple values, separated by ; or ,
-    terms  OR  date_from + date_to  - give one, not both
-    label, size, reason, strict  - optional, fall back to config.json's
-                                    "defaults" if left blank
+    rooms                          - multiple values, separated by ; or ,
+    date                           - YYYY-MM-DD, the single day to book
+    label, size, reason, strict    - optional, fall back to config.json's
+                                      "defaults" if left blank
 
-See bookings.example.csv for a filled-in example.
+See bookings.example.csv for filled-in examples.
 """
 import argparse
 import csv
@@ -27,8 +26,9 @@ import json
 import os
 import re
 import sys
+from datetime import datetime
 
-from wrb.rules import TERM_DATES, expand, parse_weekdays, summarise
+from wrb.rules import WEEKDAY_NAMES, expand, summarise
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CONFIG = os.path.join(HERE, "config.json")
@@ -53,7 +53,7 @@ def parse_bool(v, default):
     raise ValueError("expected yes/no, got %r" % v)
 
 
-def row_to_rule(row, rownum, defaults, year):
+def row_to_rule(row, rownum, defaults):
     """Validate one spreadsheet row and turn it into a rule dict.
 
     Raises ValueError with every problem found in the row (not just the
@@ -62,14 +62,15 @@ def row_to_rule(row, rownum, defaults, year):
     """
     errors = []
 
-    days = split_list(row.get("days"))
-    if days:
-        try:
-            parse_weekdays(days)
-        except ValueError as e:
-            errors.append(str(e))
+    date_str = (row.get("date") or "").strip()
+    day_of = None
+    if not date_str:
+        errors.append("no date given")
     else:
-        errors.append("no days given")
+        try:
+            day_of = datetime.strptime(date_str, "%Y-%m-%d").date()
+        except ValueError:
+            errors.append("date %r is not YYYY-MM-DD" % date_str)
 
     start = (row.get("start") or "").strip()
     end = (row.get("end") or "").strip()
@@ -80,23 +81,6 @@ def row_to_rule(row, rownum, defaults, year):
     rooms = split_list(row.get("rooms"))
     if not rooms:
         errors.append("no rooms given")
-
-    terms = split_list(row.get("terms"))
-    date_from = (row.get("date_from") or "").strip()
-    date_to = (row.get("date_to") or "").strip()
-    when = {}
-    if terms and (date_from or date_to):
-        errors.append("give terms OR date_from/date_to, not both")
-    elif terms:
-        table = TERM_DATES.get(year, {})
-        for t in terms:
-            if t.lower() not in table:
-                errors.append("unknown term %r for academic_year %s" % (t, year))
-        when = {"terms": terms}
-    elif date_from and date_to:
-        when = {"date_ranges": [[date_from, date_to]]}
-    else:
-        errors.append("need terms, or date_from + date_to")
 
     size_raw = (row.get("size") or "").strip()
     size = defaults.get("size", 4)
@@ -118,14 +102,11 @@ def row_to_rule(row, rownum, defaults, year):
     if errors:
         raise ValueError("row %d: %s" % (rownum, "; ".join(errors)))
 
-    label = (row.get("label") or "").strip()
-    if not label:
-        label = "%s %s" % ("/".join(rooms[:2]), "+".join(days))
+    label = (row.get("label") or "").strip() or "%s %s" % ("/".join(rooms[:2]), date_str)
 
-    r = {"name": label, "weekdays": days, "start": start, "end": end,
-         "rooms": rooms, "strict_rooms": strict, "size": size, "reason": reason}
-    r.update(when)
-    return r
+    return {"name": label, "weekdays": [WEEKDAY_NAMES[day_of.weekday()]],
+            "date_ranges": [[date_str, date_str]], "start": start, "end": end,
+            "rooms": rooms, "strict_rooms": strict, "size": size, "reason": reason}
 
 
 def main():
@@ -152,16 +133,14 @@ def main():
     with open(CONFIG, encoding="utf-8") as fh:
         cfg = json.load(fh)
     defaults = cfg.get("defaults", {})
-    year = cfg.get("academic_year", "2026/27")
 
     with open(args.file, newline="", encoding="utf-8-sig") as fh:
         reader = csv.DictReader(fh)
-        required = {"rooms", "days", "start", "end"}
+        required = {"rooms", "date", "start", "end"}
         missing = required - set(reader.fieldnames or [])
         if missing:
             print("CSV is missing required column(s): %s" % ", ".join(sorted(missing)))
-            print("Columns: label,rooms,days,start,end,terms,date_from,"
-                  "date_to,size,reason,strict")
+            print("Columns: label,rooms,date,start,end,size,reason,strict")
             return 1
         rows = [(i, row) for i, row in enumerate(reader, start=2) if any(row.values())]
 
@@ -172,7 +151,7 @@ def main():
     new_rules, errors = [], []
     for rownum, row in rows:
         try:
-            new_rules.append(row_to_rule(row, rownum, defaults, year))
+            new_rules.append(row_to_rule(row, rownum, defaults))
         except ValueError as e:
             errors.append(str(e))
 
@@ -191,7 +170,7 @@ def main():
         print("::error::Config is not valid after import: %s" % e)
         return 1
 
-    print("Imported %d pattern(s) from %s%s:\n"
+    print("Imported %d event(s) from %s%s:\n"
           % (len(new_rules), args.file, " (added to existing)" if args.append else ""))
     for r in new_rules:
         print("  - %s" % r["name"])
