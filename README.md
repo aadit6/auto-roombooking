@@ -1,13 +1,7 @@
 # auto-roombooking
 
 Automates the University of Warwick **Web Room Booking** system
-(`https://abs.warwick.ac.uk/WRB2526/`) — searching, selecting and confirming a
-room without a browser, plus a watcher that fires as soon as next year's
-instance opens.
-
-**Status: working.** Two real bookings were placed by this code:
-`A1.25 (Millburn)` Tue 15/09/2026 14:00–15:00 (ref **BKB97EF7**) and
-`A1.27 (Millburn)` Thu 17/09/2026 17:00–18:00 (ref **BKB98077**).
+(`https://abs.warwick.ac.uk/WRB2526/`) 
 
 ---
 
