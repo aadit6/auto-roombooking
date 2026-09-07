@@ -52,8 +52,7 @@ repository secret**. Add these three, one at a time:
 | `WRB_PASSWORD` | your ITS password |
 | `NOTIFY_EMAIL` | where you want to be emailed |
 
-Secrets are encrypted. They are not visible in logs, and nobody who reads the
-repository can see them.
+Secrets are encrypted and are not visible in logs.
 
 #### Optional: real emails instead of GitHub notifications
 
