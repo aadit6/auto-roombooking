@@ -27,23 +27,6 @@ further down.
 If someone sent you a link to their repository, click **Fork** (top right of
 the repo page) to get your own copy — no local setup needed.
 
-> **Keep it public.** A fork stays the same visibility as the repo it came
-> from — GitHub does not let you fork a public repository into a private
-> one. That's the right outcome anyway: a public repo gets **unmetered
-> Actions minutes**, which is what lets the watcher poll every 10 minutes (or
-> tighter) without worrying about the 2000-minutes/month limit a private repo
-> is capped at. The tradeoff is that `config.json` (your booking schedule)
-> and `notify.email` become visible to anyone who finds the repo.
->
-> If that tradeoff isn't acceptable, forking won't get you a private copy —
-> clone the code locally instead and push it as a new repo of your own:
-> ```bash
-> git clone <this-repo-url> && cd auto-roombooking
-> rm -rf .git && git init
-> git add . && git commit -m "Room booking robot"
-> gh repo create auto-roombooking --private --source=. --push
-> ```
-
 ### Step 2 — Tell it your login
 
 In your repository: **Settings → Secrets and variables → Actions → New
