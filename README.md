@@ -4,7 +4,7 @@ Automates the University of Warwick **Web Room Booking** system
 (`https://abs.warwick.ac.uk/WRB2526/`) — searching, selecting and confirming a
 room without a browser, plus a watcher that fires as soon as next year's
 instance opens. Every booking it makes is submitted **as a society/club
-booking** — see [Things worth knowing](#things-worth-knowing).
+booking** (hardcoded — see Step 4 below).
 
 ---
 
@@ -24,22 +24,25 @@ further down.
 
 ### Step 1 — Get your own copy
 
-If someone sent you a link to their repository, click **Use this template →
-Create a new repository** (or **Fork**). Otherwise, from the project folder:
+If someone sent you a link to their repository, click **Fork** (top right of
+the repo page) to get your own copy — no local setup needed.
 
-```bash
-git init
-git add .
-git commit -m "Room booking robot"
-gh repo create auto-roombooking --private --source=. --push
-```
-
-> **Private vs public.** Private keeps your Actions minutes on the free
-> 2000-minutes/month allowance and keeps `config.json` (your booking
-> schedule) out of public view — the safer default. A public repo gets
-> unmetered Actions minutes (so you can poll more often) at the cost of
-> `config.json`'s contents — including anything you put in `notify.email` —
-> being visible to anyone.
+> **Keep it public.** A fork stays the same visibility as the repo it came
+> from — GitHub does not let you fork a public repository into a private
+> one. That's the right outcome anyway: a public repo gets **unmetered
+> Actions minutes**, which is what lets the watcher poll every 10 minutes (or
+> tighter) without worrying about the 2000-minutes/month limit a private repo
+> is capped at. The tradeoff is that `config.json` (your booking schedule)
+> and `notify.email` become visible to anyone who finds the repo.
+>
+> If that tradeoff isn't acceptable, forking won't get you a private copy —
+> clone the code locally instead and push it as a new repo of your own:
+> ```bash
+> git clone <this-repo-url> && cd auto-roombooking
+> rm -rf .git && git init
+> git add . && git commit -m "Room booking robot"
+> gh repo create auto-roombooking --private --source=. --push
+> ```
 
 ### Step 2 — Tell it your login
 
@@ -77,8 +80,9 @@ to touch code or JSON at all.
 | `date` | **yes** | `YYYY-MM-DD` — the single day to book | `2026-11-04` |
 | `start` | **yes** | `HH:MM`, 24-hour | `17:00` |
 | `end` | **yes** | `HH:MM`, 24-hour | `22:00` |
+| `label` | optional | a name for the row, shown in logs/emails | `Weekly social` |
 | `size` | optional | how many people; snapped up to the nearest room capacity | `10` |
-| `reason` | optional | shown to Warwick, **max 35 characters**. Leave blank to use the default reason (see below) | `KCSOC Gita Circle` |
+| `reason` | optional | shown to Warwick, **max 35 characters**; blank uses the default reason set in `config.json` | `KCSOC Gita Circle` |
 | `strict` | optional | `yes`/`no` — `yes` means *never* book a different room than listed | `yes` |
 
 A filled-in example lives at
@@ -112,9 +116,9 @@ have to re-upload it (or re-run the import workflow) for a change to take
 effect.
 
 > Every booking this tool makes has the "society/club booking" option
-> switched on — see [Things worth knowing](#things-worth-knowing). There is
-> no per-row or per-config way to turn this off; if you need personal (not
-> society) bookings, remove `ctl("SocietyClub"): "Yes"` in `wrb/booker.py`.
+> switched on. There is no per-row or per-config way to turn this off; if
+> you need personal (not society) bookings, remove
+> `ctl("SocietyClub"): "Yes"` in `wrb/booker.py`.
 
 ### Alternative: one recurring pattern instead of a spreadsheet
 
@@ -218,6 +222,9 @@ To have Windows run it automatically every 15 minutes:
 .\schedule.ps1 -Status
 .\schedule.ps1 -Unregister
 ```
+
+---
+
 ## Reference
 
 ### config.json
@@ -302,5 +309,3 @@ wrb/notify.py         email / GitHub issue notification
 wrb/live.py           instance liveness detection
 recon/                investigation scripts and captured HTML
 ```
-
----
