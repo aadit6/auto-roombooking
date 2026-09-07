@@ -10,17 +10,11 @@ booking** (hardcoded — see Step 4 below).
 
 ## Setup
 
-Roughly 15 minutes. You need a GitHub account and the Warwick login of the
+You need a GitHub account and the Warwick login of the
 account that should do the booking. You do **not** need to install anything,
 understand code, or leave a computer switched on — it runs on GitHub's
 servers, following instructions alone.
 
-This guide assumes the common case: you already have **a spreadsheet of what
-to book** — a list of rooms, dates and times, e.g. exported from wherever
-your society already tracks its bookings. If you only ever want one
-recurring weekly pattern instead of a list of one-off events, see
-[Alternative: one recurring pattern](#alternative-one-recurring-pattern-instead-of-a-spreadsheet)
-further down.
 
 ### Step 1 — Get your own copy
 
@@ -102,46 +96,9 @@ effect.
 > switched on. There is no per-row or per-config way to turn this off; if
 > you need personal (not society) bookings, remove
 > `ctl("SocietyClub"): "Yes"` in `wrb/booker.py`.
-
-### Alternative: one recurring pattern instead of a spreadsheet
-
-If all you want is a single "same time every week" pattern, skip the
-spreadsheet:
-
-**In the browser:** Actions → **"2. Change what gets booked"** → Run
-workflow. Fill the form in and it saves for you:
-
-| Field | Example |
-|---|---|
-| Days | `Wed,Thu` |
-| Start / End | `17:00` / `22:00` |
-| Rooms | `OC1.06,OC1.09,OC1.04,OC1.01` (best first) |
-| Book ONLY these rooms | ticked |
-| Terms | `autumn,spring,summer` |
-| Group size | `6` |
-| Reason | `Group study session` |
-| Booking system URL | `https://abs.warwick.ac.uk/WRB2627/` |
-
-> **"Book ONLY these rooms"** is the important one. Ticked, it will *never*
-> book a room you did not ask for — if all four Oculus rooms are taken it
-> books nothing and tries again on the next run. Unticked, it falls back to
-> the smallest room that fits.
-
-**Note:** this form *replaces* the whole booking list with this one pattern —
-don't run it after uploading a spreadsheet unless you mean to discard those
-rows.
-
-**Or on your own computer**, which asks the same questions in a friendlier
-way:
-
-```bash
-python setup_wizard.py
-python run.py --check      # shows exactly which dates it will book
-```
-
 ### Step 5 — Turn the watcher on
 
-Nothing more to do: **"Watch and book"** runs automatically every 10 minutes
+Nothing more to do: **"Watch and book"** -should- run automatically every 10 minutes
 from the moment the code is in your repository. While the system is closed
 each run takes a few seconds and does nothing.
 
@@ -218,31 +175,6 @@ emails you a link to re-enable it.
 **"hit booking limit"**
 Warwick refused further bookings on your account. Nothing to fix in the
 tool — you are at your allowance. Reduce how many weeks/rows you ask for.
-
-### Running it on your own computer instead
-
-Only needed if you would rather not use GitHub, or GitHub cannot reach
-Warwick. The machine must be switched on for it to work.
-
-```bash
-python -m venv .venv
-.venv/Scripts/pip install -r requirements.txt
-python setup_wizard.py
-# or: python import_csv.py --file bookings.csv --default-reason "KCSOC Gita Circle"
-
-python run.py --check      # what would happen
-python run.py --confirm    # do it once
-```
-
-To have Windows run it automatically every 15 minutes:
-
-```powershell
-.\schedule.ps1 -Register -Confirm
-.\schedule.ps1 -Status
-.\schedule.ps1 -Unregister
-```
-
----
 
 ## Reference
 
