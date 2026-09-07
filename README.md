@@ -159,6 +159,42 @@ Actions → **Sprint (fast polling)** → Run workflow → leave the defaults.
 That polls every 30 seconds for 5 hours and books the instant it opens. Start
 it in the morning and forget about it.
 
+### Optional: steadier background polling
+
+GitHub's own `schedule:` trigger for "Watch and book" is best-effort — it can
+be delayed by hours under load, especially at round-number minutes. That's
+harmless while the system is closed (Sprint already gives you precise
+30-second polling on the day it actually opens), so most people can skip
+this. If you'd rather the background polling itself was punctual too, a free
+external cron service can trigger the workflow instead of relying on
+GitHub's scheduler:
+
+1. **Make a GitHub token**, scoped to just this repo: your GitHub profile →
+   **Settings → Developer settings → Personal access tokens → Fine-grained
+   tokens → Generate new token**. Set *Repository access* to **Only select
+   repositories** (choose this one), and under *Permissions* set **Actions**
+   to **Read and write**. Copy the token — you won't see it again.
+2. **Sign up at [cron-job.org](https://cron-job.org)** (free) and create a
+   new cron job:
+   - URL: `https://api.github.com/repos/<owner>/<repo>/actions/workflows/watch.yml/dispatches`
+   - Method: `POST`
+   - Headers: `Authorization: Bearer <your token>`,
+     `Accept: application/vnd.github+json`, `Content-Type: application/json`
+   - Body: `{"ref":"main"}`
+   - Schedule: every 5 (or however many) minutes.
+3. Save and enable it. A `204` status in cron-job.org's execution log means
+   it fired successfully; check the **Actions** tab to confirm runs are
+   landing on time.
+
+> This is per-copy, not something set up once for everyone. cron-job.org
+> fires a URL tied to one specific repo using one specific token, so anyone
+> else using this repo who wants this needs to repeat these steps
+> themselves, with their own repo URL and their own token — it can't be
+> shared or centralized. Also treat that token carefully: unlike your
+> Warwick password, it lives in a third-party service, not GitHub's
+> encrypted Secrets, so scope it to just this repo (as above) and revoke it
+> if you stop using cron-job.org.
+
 ### Troubleshooting
 
 **"1. Test my setup" fails at the login step**
