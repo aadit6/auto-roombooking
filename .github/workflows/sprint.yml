@@ -55,7 +55,8 @@ jobs:
           if [ "${{ inputs.dry_run }}" = "true" ]; then FLAG=""; fi
           python run.py $FLAG --loop \
             --interval "${{ inputs.interval }}" \
-            --max-minutes "${{ inputs.minutes }}"
+            --max-minutes "${{ inputs.minutes }}" \
+            --login-wait-minutes 5
 
       - name: Remember what was booked
         if: always()

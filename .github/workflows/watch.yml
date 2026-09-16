@@ -30,7 +30,10 @@ permissions:
 jobs:
   book:
     runs-on: ubuntu-latest
-    timeout-minutes: 10   # one poll cycle; a hung run must not block the next few
+    # Up to ~8 min refreshing past "User Limit Reached", then however long
+    # booking takes once in (a full pass has run past 10 min). Requests have
+    # their own timeouts, so a hang can't eat all of this.
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
@@ -53,9 +56,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            python run.py
+            python run.py --login-wait-minutes 8
           else
-            python run.py --confirm
+            python run.py --confirm --login-wait-minutes 8
           fi
 
       - name: Remember what was booked

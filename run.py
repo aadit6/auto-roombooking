@@ -20,7 +20,7 @@ from datetime import date, datetime
 from dotenv import load_dotenv
 
 from wrb.booker import Booker
-from wrb.client import WRBClient, WRBError
+from wrb.client import WRBClient, WRBError, WRBUserLimit
 from wrb.live import check
 from wrb.notify import Notifier, live_message, results_message
 from wrb.rules import Slot, expand, summarise
@@ -114,7 +114,16 @@ def run_once(cfg, args, state, notifier):
         state.save()
 
     client = WRBClient(base=instance, verbose=not args.quiet)
-    client.login()
+    login_wait = args.login_wait_minutes * 60
+
+    def login():
+        client.login(wait_seconds=login_wait, retry_seconds=args.login_retry_seconds)
+
+    try:
+        login()
+    except WRBUserLimit as e:
+        log("open but full: %s - %d slot(s) waiting" % (e, len(pending)))
+        return "waiting"
     b = Booker(client=client)
 
     booked, failed, skipped = [], [], []
@@ -135,6 +144,19 @@ def run_once(cfg, args, state, notifier):
                 b, slot, args.confirm, state, instance, day_rooms)
         except WRBError as e:
             outcome, room, ref, detail = "failed", None, None, str(e)
+            if client.at_user_limit() or "Login.aspx" in (client.url or ""):
+                # Dropped out of our session (timeout or bumped); get back in
+                # and give this slot one more go.
+                log("  session lost (%s); logging in again" % e)
+                try:
+                    login()
+                    outcome, room, ref, detail = book_slot(
+                        b, slot, args.confirm, state, instance, day_rooms)
+                except WRBUserLimit as e2:
+                    log("  could not get back in: %s - stopping" % e2)
+                    break
+                except WRBError as e2:
+                    outcome, room, ref, detail = "failed", None, None, str(e2)
         except Exception:
             outcome, room, ref, detail = "failed", None, None, traceback.format_exc(limit=3)
 
@@ -195,6 +217,11 @@ def main(argv=None):
     p.add_argument("--loop", action="store_true", help="keep polling until finished")
     p.add_argument("--interval", type=int, default=60, help="seconds between polls")
     p.add_argument("--max-minutes", type=int, default=0, help="stop --loop after N minutes")
+    p.add_argument("--login-wait-minutes", type=float, default=0,
+                   help="when WRB says 'User Limit Reached', keep refreshing "
+                        "for up to N minutes")
+    p.add_argument("--login-retry-seconds", type=float, default=3,
+                   help="seconds between refreshes while at the user limit")
     p.add_argument("--quiet", action="store_true")
     args = p.parse_args(argv)
 

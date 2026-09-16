@@ -4,8 +4,10 @@ The whole booking wizard is a single ASP.NET WebForms page that posts back to
 itself.  Driving it is therefore a matter of round-tripping __VIEWSTATE and
 friends while flipping one control at a time, exactly as the browser does.
 """
+import functools
 import os
 import re
+import time
 from datetime import date, datetime, timedelta
 from urllib.parse import urljoin
 
@@ -26,6 +28,15 @@ class WRBError(RuntimeError):
     pass
 
 
+class WRBUserLimit(WRBError):
+    """The instance is at its concurrent-user cap and never let us in."""
+
+
+# Request timeout (connect, read). Without one a stalled response hangs the
+# whole run until the Actions job timeout kills it.
+TIMEOUT = (10, 60)
+
+
 def cal_arg(d):
     """Event argument the calendar expects for a given date."""
     return str((d - CAL_EPOCH).days)
@@ -40,6 +51,7 @@ class WRBClient:
         self.verbose = verbose
         self.s = requests.Session()
         self.s.headers.update({"User-Agent": UA})
+        self.s.request = functools.partial(self.s.request, timeout=TIMEOUT)
         self.page = None       # BeautifulSoup of the current page
         self.url = None        # URL the current page came from
 
@@ -116,8 +128,46 @@ class WRBClient:
         return self._post(data)
 
     # ---------------------------------------------------------------- login
-    def login(self):
-        r = self._absorb(self.s.get(self.base))
+    def at_user_limit(self):
+        """True when the page is WRB's 'User Limit Reached' notice.
+
+        It is served at the PortalLogin.aspx URL, so the URL alone can't tell it
+        apart from the real login form.
+        """
+        if self.page is None:
+            return False
+        f = self.page.find("form")
+        if f is not None and "UserLimitReached" in (f.get("action") or ""):
+            return True
+        return "User Limit Reached" in self.page.get_text(" ")
+
+    def _get_past_limit(self, url, wait_seconds, retry_seconds):
+        """GET url, re-requesting on the same session while at the user cap.
+
+        Reusing one session (rather than a fresh one per attempt) is what a
+        browser refresh does, and avoids piling up anonymous sessions.
+        """
+        started = time.time()
+        tries = 0
+        while True:
+            tries += 1
+            r = self._absorb(self.s.get(url))
+            if not self.at_user_limit():
+                if tries > 1:
+                    self.log("[login] past user limit after %d tries (%ds)"
+                             % (tries, time.time() - started))
+                return r
+            waited = time.time() - started
+            if waited >= wait_seconds:
+                raise WRBUserLimit("user limit reached; still full after %d tries "
+                                   "over %ds" % (tries, waited))
+            if tries == 1 or tries % 20 == 0:
+                self.log("[login] user limit reached, refreshing every %ss "
+                         "(try %d, %ds so far)" % (retry_seconds, tries, waited))
+            time.sleep(retry_seconds)
+
+    def login(self, wait_seconds=0, retry_seconds=3):
+        r = self._get_past_limit(self.base, wait_seconds, retry_seconds)
         if "Login.aspx" not in r.url:
             self.log("[login] already authenticated ->", r.url)
             return r
@@ -131,6 +181,10 @@ class WRBClient:
             raise WRBError("unexpected login form layout")
         r = self.click(logon_ctl, extra={user_ctl: self.username,
                                          pass_ctl: self.password})
+        if self.at_user_limit():
+            # Credentials were accepted by the portal but WRB filled up in the
+            # meantime; go round again rather than calling it a bad password.
+            return self.login(wait_seconds, retry_seconds)
         if "Login.aspx" in r.url:
             raise WRBError("login rejected (bad credentials or locked account)")
         self.log("[login] ok ->", r.url)
@@ -174,6 +228,11 @@ class WRBClient:
         target = self.postback_target("CollegeCalendar1$theCalendar")
         if not target:
             raise WRBError("calendar control not found on %s" % self.url)
+        if not self._day_visible(target, d):
+            self._show_month(d)
+            target = self.postback_target("CollegeCalendar1$theCalendar")
+            if not target or not self._day_visible(target, d):
+                raise WRBError("date %s not reachable in the calendar" % d)
         self.postback(target, cal_arg(d))
         box = self.control("calendarDateTextBox")
         got = self.page.find("input", attrs={"name": box}).get("value") if box else None
@@ -181,6 +240,29 @@ class WRBClient:
             raise WRBError("date %s did not take (textbox=%r)" % (d, got))
         self.log("[date] selected", got)
         return got
+
+    def _day_visible(self, target, d):
+        """Is d one of the day cells the calendar is currently rendering?
+
+        The calendar only shows ~6 weeks around one month; posting back a day
+        outside that grid is silently ignored.
+        """
+        needle = "__doPostBack('%s','%s')" % (target, cal_arg(d))
+        return any(needle in (a.get("href") or "") for a in self.page.find_all("a"))
+
+    def _show_month(self, d):
+        """Switch the calendar to d's month via the month dropdown."""
+        nav = self.control("CollegeCalendar1$MonthsNavigation")
+        if not nav:
+            raise WRBError("calendar month dropdown not found on %s" % self.url)
+        want = d.strftime("01/%m/%Y")
+        value = next((v for v, _ in self.options("CollegeCalendar1$MonthsNavigation")
+                      if v.startswith(want)), None)
+        if value is None:
+            raise WRBError("month %s not offered by the calendar (outside booking "
+                           "window?)" % d.strftime("%B %Y"))
+        self.postback(nav, extra={nav: value})
+        self.log("[date] showing", d.strftime("%B %Y"))
 
     def errors(self):
         out = []
