@@ -14,6 +14,8 @@ from datetime import date, datetime
 from .client import WRBClient, WRBError
 
 GRID_ID = "ctl00_Main_OptionSelector_OptionsGrid"
+# "Show More Options" clicks per search before giving up on the wanted rooms.
+MAX_EXTEND_ROUNDS = 8
 
 # Signals read off the page after confirming.
 BOOKED_RE = re.compile(r"has been reserved for you|booking requested", re.I)
@@ -107,7 +109,30 @@ class Booker:
                 self._opt_value("Room1$SuitabilityList", s) for s in req.suitabilities]
 
         c.click(c.control("ShowOptionsBtn"), extra=extra)
-        return self.options()
+        return self._expand_until(self.options(), req.rooms)
+
+    def _expand_until(self, opts, wanted, max_rounds=MAX_EXTEND_ROUNDS):
+        """Click "Show More Options" until a wanted room is offered.
+
+        WRB only lists the first handful of matches; without this, specific
+        rooms further down (e.g. Oculus) are never seen. Stops as soon as one
+        appears on the current page so the returned options are selectable.
+        """
+        c = self.c
+        for _ in range(max_rounds):
+            if not wanted or any(w.lower() in o.room.lower()
+                                 for w in wanted for o in opts):
+                break
+            tgt = c.postback_target("OptionSelector$ExtendSearchLink")
+            if not tgt:
+                break
+            c.postback(tgt)
+            more = self.options()
+            if len(more) <= len(opts) and {o.room for o in more} <= {o.room for o in opts}:
+                break       # nothing new offered
+            opts = more
+            c.log("[search] showing more options: %d" % len(opts))
+        return opts
 
     @staticmethod
     def _duration_label(start, end):
