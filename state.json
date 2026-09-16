@@ -1,6 +1,307 @@
 {
   "booked": {},
-  "failures": {},
+  "failures": {
+    "WRB2627|2026-10-07|17:00|22:00": {
+      "at": "2026-09-16T16:51:25",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.07)"
+    },
+    "WRB2627|2026-10-08|17:00|22:00": {
+      "at": "2026-09-16T16:51:59",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2026-10-14|17:00|22:00": {
+      "at": "2026-09-16T16:52:10",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A0.28 (Millburn))"
+    },
+    "WRB2627|2026-10-15|17:00|22:00": {
+      "at": "2026-09-16T16:52:26",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2026-10-21|17:00|22:00": {
+      "at": "2026-09-16T16:52:48",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.07)"
+    },
+    "WRB2627|2026-10-22|17:00|22:00": {
+      "at": "2026-09-16T16:53:05",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A1.27 (Millburn), A1.28 (Millburn), MB0.07, A0.28 (Millburn), WLT)"
+    },
+    "WRB2627|2026-10-28|17:00|22:00": {
+      "at": "2026-09-16T16:53:10",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.07, A0.28 (Millburn))"
+    },
+    "WRB2627|2026-10-29|17:00|22:00": {
+      "at": "2026-09-16T16:53:17",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08, A1.01 (Zeeman))"
+    },
+    "WRB2627|2026-11-04|17:00|22:00": {
+      "at": "2026-09-16T16:53:21",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.07)"
+    },
+    "WRB2627|2026-11-05|17:00|22:00": {
+      "at": "2026-09-16T16:53:26",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A0.28 (Millburn))"
+    },
+    "WRB2627|2026-11-11|17:00|22:00": {
+      "at": "2026-09-16T16:53:30",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.07)"
+    },
+    "WRB2627|2026-11-12|17:00|22:00": {
+      "at": "2026-09-16T16:53:41",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2026-11-18|17:00|22:00": {
+      "at": "2026-09-16T16:53:52",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.07)"
+    },
+    "WRB2627|2026-11-19|17:00|22:00": {
+      "at": "2026-09-16T16:54:29",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A0.28 (Millburn))"
+    },
+    "WRB2627|2026-11-25|17:00|22:00": {
+      "at": "2026-09-16T16:54:51",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.07)"
+    },
+    "WRB2627|2026-11-26|17:00|22:00": {
+      "at": "2026-09-16T16:55:14",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2026-12-02|17:00|22:00": {
+      "at": "2026-09-16T16:55:47",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.07, A0.28 (Millburn))"
+    },
+    "WRB2627|2026-12-03|17:00|22:00": {
+      "at": "2026-09-16T16:56:10",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A0.28 (Millburn), L5)"
+    },
+    "WRB2627|2026-12-09|17:00|22:00": {
+      "at": "2026-09-16T16:56:24",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.07)"
+    },
+    "WRB2627|2026-12-10|17:00|22:00": {
+      "at": "2026-09-16T16:56:32",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2027-01-13|17:00|22:00": {
+      "at": "2026-09-16T16:56:36",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-01-14|17:00|22:00": {
+      "at": "2026-09-16T16:56:55",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2027-01-20|17:00|22:00": {
+      "at": "2026-09-16T16:57:11",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-01-21|17:00|22:00": {
+      "at": "2026-09-16T16:57:30",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08, A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-01-27|17:00|22:00": {
+      "at": "2026-09-16T16:57:44",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-01-28|17:00|22:00": {
+      "at": "2026-09-16T16:57:50",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-02-03|17:00|22:00": {
+      "at": "2026-09-16T16:58:01",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-02-04|17:00|22:00": {
+      "at": "2026-09-16T16:58:24",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman), A0.28 (Millburn))"
+    },
+    "WRB2627|2027-02-10|17:00|22:00": {
+      "at": "2026-09-16T16:59:02",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-02-11|17:00|22:00": {
+      "at": "2026-09-16T16:59:25",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-02-17|17:00|22:00": {
+      "at": "2026-09-16T16:59:50",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-02-18|17:00|22:00": {
+      "at": "2026-09-16T17:00:01",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman), A0.28 (Millburn))"
+    },
+    "WRB2627|2027-02-24|17:00|22:00": {
+      "at": "2026-09-16T17:00:06",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-02-25|17:00|22:00": {
+      "at": "2026-09-16T17:00:29",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-03-03|17:00|22:00": {
+      "at": "2026-09-16T17:00:42",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-03-04|17:00|22:00": {
+      "at": "2026-09-16T17:00:55",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-03-10|17:00|22:00": {
+      "at": "2026-09-16T17:01:08",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-03-11|17:00|22:00": {
+      "at": "2026-09-16T17:01:13",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman), A0.28 (Millburn))"
+    },
+    "WRB2627|2027-03-17|17:00|22:00": {
+      "at": "2026-09-16T17:01:17",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-03-18|17:00|22:00": {
+      "at": "2026-09-16T17:01:24",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman), A0.28 (Millburn))"
+    },
+    "WRB2627|2027-04-28|17:00|22:00": {
+      "at": "2026-09-16T17:01:29",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.07)"
+    },
+    "WRB2627|2027-04-29|17:00|22:00": {
+      "at": "2026-09-16T17:01:33",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2027-05-05|17:00|22:00": {
+      "at": "2026-09-16T17:01:39",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.07)"
+    },
+    "WRB2627|2027-05-06|17:00|22:00": {
+      "at": "2026-09-16T17:01:46",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2027-05-12|17:00|22:00": {
+      "at": "2026-09-16T17:02:03",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.07)"
+    },
+    "WRB2627|2027-05-13|17:00|22:00": {
+      "at": "2026-09-16T17:02:24",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2027-05-19|17:00|22:00": {
+      "at": "2026-09-16T17:02:36",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.07)"
+    },
+    "WRB2627|2027-05-20|17:00|22:00": {
+      "at": "2026-09-16T17:02:42",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2027-05-26|17:00|22:00": {
+      "at": "2026-09-16T17:02:46",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A0.28 (Millburn))"
+    },
+    "WRB2627|2027-05-27|17:00|22:00": {
+      "at": "2026-09-16T17:03:05",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2027-06-02|17:00|22:00": {
+      "at": "2026-09-16T17:03:28",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A0.28 (Millburn))"
+    },
+    "WRB2627|2027-06-03|17:00|22:00": {
+      "at": "2026-09-16T17:03:43",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2027-06-09|17:00|22:00": {
+      "at": "2026-09-16T17:04:22",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A0.28 (Millburn))"
+    },
+    "WRB2627|2027-06-10|17:00|22:00": {
+      "at": "2026-09-16T17:04:33",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2027-06-16|17:00|22:00": {
+      "at": "2026-09-16T17:05:08",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A0.28 (Millburn))"
+    },
+    "WRB2627|2027-06-17|17:00|22:00": {
+      "at": "2026-09-16T17:06:09",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2027-06-23|17:00|22:00": {
+      "at": "2026-09-16T17:07:21",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A0.28 (Millburn))"
+    },
+    "WRB2627|2027-06-24|17:00|22:00": {
+      "at": "2026-09-16T17:07:54",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    },
+    "WRB2627|2027-06-30|17:00|22:00": {
+      "at": "2026-09-16T17:08:29",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), A1.01 (Zeeman))"
+    },
+    "WRB2627|2027-07-01|17:00|22:00": {
+      "at": "2026-09-16T17:09:03",
+      "count": 1,
+      "last": "none of OC1.06/OC1.09/OC1.04/OC1.01/OC0.01/OC0.02/OC0.04 free (offered: B2.03 (Sci Conc), A0.26 (Millburn), A1.25 (Millburn), A1.27 (Millburn), A1.28 (Millburn), MB0.08)"
+    }
+  },
   "flags": {
     "announced:https://abs.warwick.ac.uk/WRB2627/": "2026-09-16T10:10:31"
   }
